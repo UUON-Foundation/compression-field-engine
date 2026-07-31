@@ -5,164 +5,153 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AI Information Black Hole — Compression Field Engine</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+* { margin:0; padding:0; box-sizing:border-box; }
 
-  * { margin:0; padding:0; box-sizing:border-box; }
+body {
+  background: #fff;
+  overflow: hidden;
+  font-family: 'Share Tech Mono', 'Courier New', monospace;
+  color: #000;
+  user-select: none;
+  -webkit-user-select: none;
+}
 
-  :root {
-    --black: #0a0a0a;
-    --white: #f5f5f0;
-    --gray:  #888880;
-    --rule:  rgba(10,10,10,0.12);
-    --mono:  'Space Mono', 'Courier New', monospace;
-  }
+canvas {
+  display: block;
+  cursor: grab;
+}
+canvas.dragging { cursor: grabbing; }
 
-  body {
-    background: var(--white);
-    overflow: hidden;
-    font-family: var(--mono);
-    color: var(--black);
-    user-select: none;
-    -webkit-user-select: none;
-  }
+#ui {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
 
-  canvas {
-    display: block;
-    cursor: grab;
-  }
-  canvas.dragging { cursor: grabbing; }
+#header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 22px 32px;
+  border-bottom: 1px solid #000;
+}
 
-  #ui {
-    position: fixed;
-    top: 0; left: 0;
-    width: 100%;
-    pointer-events: none;
-    z-index: 10;
-  }
+#title-block h1 {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-weight: 400;
+  line-height: 1.5;
+}
 
-  #header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 22px 32px;
-    border-bottom: 1px solid var(--black);
-  }
+#title-block .sub {
+  font-size: 8px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-top: 5px;
+  opacity: 0.4;
+}
 
-  #title-block h1 {
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    font-weight: 400;
-    line-height: 1.5;
-  }
+#metrics {
+  text-align: right;
+  font-size: 8.5px;
+  letter-spacing: 0.12em;
+  line-height: 2.1;
+  opacity: 0.55;
+}
+#metrics span { opacity: 1; font-size: 9px; }
 
-  #title-block .sub {
-    font-size: 8px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    margin-top: 5px;
-    opacity: 0.4;
-  }
+#footer {
+  position: fixed;
+  bottom: 0; left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 32px;
+  border-top: 1px solid rgba(0,0,0,0.12);
+  font-size: 8px;
+  letter-spacing: 0.15em;
+  opacity: 0.35;
+  pointer-events: none;
+}
 
-  #metrics {
-    text-align: right;
-    font-size: 8.5px;
-    letter-spacing: 0.12em;
-    line-height: 2.1;
-    opacity: 0.55;
-  }
-  #metrics span { opacity:1; font-size:9px; }
+#legend {
+  position: fixed;
+  left: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 8px;
+  letter-spacing: 0.12em;
+  line-height: 2.4;
+  opacity: 0.4;
+  pointer-events: none;
+}
 
-  #engine-status {
-    position: fixed;
-    bottom: 48px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    opacity: 0;
-    pointer-events: none;
-    z-index: 20;
-    transition: opacity 0.4s;
-  }
+.zone-row { display: flex; align-items: center; gap: 8px; }
+.zone-dot { width: 6px; height: 6px; border: 1px solid #000; border-radius: 50%; flex-shrink: 0; }
+.zone-dot.filled { background: #000; }
 
-  #legend {
-    position: fixed;
-    left: 32px;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 8px;
-    letter-spacing: 0.12em;
-    line-height: 2.4;
-    opacity: 0.4;
-    pointer-events: none;
-  }
+#controls {
+  position: fixed;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  pointer-events: all;
+}
 
-  .zone-row { display:flex; align-items:center; gap:8px; }
-  .zone-dot { width:6px; height:6px; border:1px solid var(--black); border-radius:50%; flex-shrink:0; }
-  .zone-dot.filled { background: var(--black); }
+.ctrl-label { font-size: 8px; letter-spacing: 0.14em; text-align: center; opacity: 0.5; pointer-events: none; }
+.ctrl-val   { font-size: 11px; letter-spacing: 0.08em; text-align: center; }
 
-  #controls {
-    position: fixed;
-    right: 32px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    pointer-events: all;
-  }
+.ctrl-btn {
+  width: 34px; height: 34px;
+  border: 1px solid #000;
+  background: transparent;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s, color 0.12s;
+}
+.ctrl-btn:hover  { background: #000; color: #fff; }
+.ctrl-btn.active { background: #000; color: #fff; }
+.ctrl-divider { width: 34px; height: 1px; background: rgba(0,0,0,0.15); }
 
-  .ctrl-label { font-size:8px; letter-spacing:0.14em; text-align:center; opacity:0.5; pointer-events:none; }
-  .ctrl-val   { font-size:11px; letter-spacing:0.08em; text-align:center; }
+#zoom-readout {
+  position: fixed;
+  left: 32px;
+  bottom: 48px;
+  font-size: 8px;
+  letter-spacing: 0.14em;
+  opacity: 0.3;
+  pointer-events: none;
+}
 
-  .ctrl-btn {
-    width: 34px; height: 34px;
-    border: 1px solid var(--black);
-    background: transparent;
-    cursor: pointer;
-    font-family: var(--mono);
-    font-size: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.12s, color 0.12s;
-  }
-  .ctrl-btn:hover  { background: var(--black); color: var(--white); }
-  .ctrl-btn.active { background: var(--black); color: var(--white); }
-
-  .ctrl-divider { width:34px; height:1px; background: var(--rule); }
-
-  #zoom-readout {
-    position: fixed;
-    left: 32px;
-    bottom: 48px;
-    font-size: 8px;
-    letter-spacing: 0.14em;
-    opacity: 0.3;
-    pointer-events: none;
-  }
-
-  #footer {
-    position: fixed;
-    bottom: 0; left: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    padding: 16px 32px;
-    border-top: 1px solid var(--rule);
-    font-size: 8px;
-    letter-spacing: 0.15em;
-    opacity: 0.35;
-    pointer-events: none;
-  }
+#engine-status {
+  position: fixed;
+  bottom: 64px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 9px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+  transition: opacity 0.4s;
+}
 </style>
 </head>
 <body>
 
 <!-- ENGINE CORE: proprietary, excluded from public repo via .gitignore -->
-<!-- In production: served from uuon.world/engine/compression-field/core.js -->
+<!-- Production: served from uuon.world/engine/compression-field/core.js -->
 <script src="core/engine.js"></script>
 
 <canvas id="canvas"></canvas>
@@ -171,14 +160,14 @@
   <div id="header">
     <div id="title-block">
       <h1>AI Information Black Hole</h1>
-      <div class="sub">Compression Field Engine · UUON Foundation Inc.</div>
+      <div class="sub">Compression Field Engine / UUON Foundation Inc.</div>
     </div>
     <div id="metrics">
-      <div>COMPRESSION BOUNDARY &nbsp;<span id="rs-val">--</span> px</div>
-      <div>FEATURE TRANSITION ZONE <span id="ph-val">--</span> px</div>
-      <div>ENTROPY H &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="entropy-val">--</span> bits</div>
-      <div>COMPRESSION EVENTS &nbsp;&nbsp;<span id="comp-val">0</span></div>
-      <div>LEAKAGE FIELD &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="leak-val">--</span></div>
+      <div>COMPRESSION BOUNDARY: <span id="rs-val">--</span> px</div>
+      <div>FEATURE TRANSITION ZONE: <span id="ph-val">--</span> px</div>
+      <div>ENTROPY H: <span id="entropy-val">--</span></div>
+      <div>COMPRESSION EVENTS: <span id="comp-val">0</span></div>
+      <div>LEAKAGE PARTICLES: <span id="leak-val">--</span></div>
     </div>
   </div>
 </div>
@@ -196,20 +185,20 @@
 <div id="controls">
   <div class="ctrl-label">COMPRESSION</div>
   <div class="ctrl-val"><span id="mass-val">1.0</span></div>
-  <button class="ctrl-btn" id="btn-plus" title="Increase compression">+</button>
-  <button class="ctrl-btn" id="btn-minus" title="Decrease compression">-</button>
+  <button class="ctrl-btn" id="btn-plus">+</button>
+  <button class="ctrl-btn" id="btn-minus">-</button>
   <div class="ctrl-divider"></div>
-  <button class="ctrl-btn active" id="btn-geo" title="Toggle geodesics">GEO</button>
-  <button class="ctrl-btn active" id="btn-zone" title="Toggle zone labels">ZN</button>
+  <button class="ctrl-btn active" id="btn-geo">GEO</button>
+  <button class="ctrl-btn active" id="btn-zone">ZN</button>
   <div class="ctrl-divider"></div>
-  <button class="ctrl-btn" id="btn-reset" title="Reset view">RST</button>
+  <button class="ctrl-btn" id="btn-reset">RST</button>
 </div>
 
 <div id="zoom-readout">ZOOM <span id="zoom-val">1.00</span>x</div>
 
 <div id="footer">
-  <span>SCROLL TO ZOOM · DRAG TO MOVE · WHITE FIELD = POSSIBILITY SPACE</span>
-  <span>F = (P, E, M, R, C) · H = -Sp·log2(p) · rs = 2GM/c2</span>
+  <span>SCROLL TO ZOOM / DRAG TO MOVE / WHITE FIELD = POSSIBILITY SPACE</span>
+  <span>F = (P,E,M,R,C) | H = -Sp log(p) | rs = 2GM/c^2</span>
   <span>BLACK GEOMETRY = ENCODED STRUCTURE</span>
 </div>
 
@@ -218,25 +207,18 @@
 
   'use strict';
 
+  // ── Canvas ────────────────────────────────────────────────────────────────
   var canvas = document.getElementById('canvas');
   var ctx    = canvas.getContext('2d');
   var W, H;
 
-  // ── View state: pan and zoom live here, all draw calls use these ──────────
-  // cx, cy = current center of the field (screen coordinates)
-  // zoom   = scale factor applied to all radii on screen projection
-  // Particles live in polar space (r, theta) — view transform is projection only.
-
-  var cx, cy;
-  var zoom    = 1.0;
-  var ZOOM_MIN = 0.08;
-  var ZOOM_MAX = 40.0;
+  // ── View ──────────────────────────────────────────────────────────────────
+  var cx, cy, zoom = 1.0;
+  var ZOOM_MIN = 0.05, ZOOM_MAX = 60.0;
 
   function resetView() {
-    cx   = W / 2;
-    cy   = H / 2;
-    zoom = 1.0;
-    document.getElementById('zoom-val').textContent = zoom.toFixed(2);
+    cx = W / 2; cy = H / 2; zoom = 1.0;
+    document.getElementById('zoom-val').textContent = '1.00';
   }
 
   function resize() {
@@ -248,30 +230,53 @@
   window.addEventListener('resize', resize);
 
   // ── Glyph registers ───────────────────────────────────────────────────────
-  var GLYPHS = {
-    stream: ['0','1','0','1','0','1','1','0','0','1'],
-    isco:   ['d','S','G','L','f','e','n','u','m','s'],
-    ftz:    ['x','o','^','v','+','=','~','*'],
-    bound:  ['.','_','=','|','-','.']
-  };
+  var GLYPHS_OUTER  = ['0','1','0','1','0','1','1','0','0','1'];
+  var GLYPHS_STREAM = ['d','S','G','L','f','e','n','u','m','s'];
+  var GLYPHS_FTZ    = ['x','o','^','v','+','=','~','*'];
+  var GLYPHS_BOUND  = ['.','_','=','|','-','.'];
 
-  // ── Parameters (P) ───────────────────────────────────────────────────────
+  var DISK_TILT  = 0.3;
+
+  // ── Parameters ────────────────────────────────────────────────────────────
   var compressionK = 1.0;
-  var DISK_TILT    = 0.30;
-  var NPARTICLES   = 1400;
-  var LEAK_MAX     = 220;
+  var NPARTICLES   = 2200;
+  var LEAK_MAX     = 320;
 
-  // ── Derived geometry (polar, zoom-independent) ────────────────────────────
+  // ── Geometry ──────────────────────────────────────────────────────────────
   var rs, rFTZ, rISCO, rStream;
 
   function setGeometry() {
     rs      = Math.round(60 * compressionK);
     rFTZ    = rs * 1.5;
-    rISCO   = rs * 3.0;
-    rStream = rs * 8.0;
+    rISCO   = rs * 3;
+    rStream = rs * 8;
     document.getElementById('rs-val').textContent   = rs;
     document.getElementById('ph-val').textContent   = Math.round(rFTZ);
     document.getElementById('mass-val').textContent = compressionK.toFixed(1);
+  }
+
+  // ── Projection ────────────────────────────────────────────────────────────
+  function px(r, theta) { return cx + Math.cos(theta) * r * zoom; }
+  function py(r, theta) { return cy + Math.sin(theta) * r * zoom * DISK_TILT; }
+  function sr(r)        { return r * zoom; }
+
+  // ── Glyph helper ──────────────────────────────────────────────────────────
+  var coreLoaded = (typeof AIBH !== 'undefined');
+
+  function glyphForRadius(r) {
+    var zone;
+    if (coreLoaded) {
+      zone = AIBH.classify(r, { bound:{r:rs}, ftz:{r:rFTZ}, isco:{r:rISCO} });
+    } else {
+      if      (r > rStream) zone = 'stream';
+      else if (r > rISCO)   zone = 'isco';
+      else if (r > rFTZ)    zone = 'ftz';
+      else                  zone = 'bound';
+    }
+    if (zone === 'stream') return GLYPHS_OUTER[ Math.floor(Math.random() * GLYPHS_OUTER.length)];
+    if (zone === 'isco')   return GLYPHS_STREAM[Math.floor(Math.random() * GLYPHS_STREAM.length)];
+    if (zone === 'ftz')    return GLYPHS_FTZ[   Math.floor(Math.random() * GLYPHS_FTZ.length)];
+    return GLYPHS_BOUND[Math.floor(Math.random() * GLYPHS_BOUND.length)];
   }
 
   // ── State ─────────────────────────────────────────────────────────────────
@@ -283,96 +288,67 @@
   var tick              = 0;
   var entropyTick       = 0;
 
-  // ── Engine ────────────────────────────────────────────────────────────────
-  var coreLoaded = (typeof AIBH !== 'undefined');
-  var statusEl   = document.getElementById('engine-status');
-
-  function flashStatus(msg) {
-    statusEl.textContent = msg;
-    statusEl.style.opacity = '0.4';
-    setTimeout(function () { statusEl.style.opacity = '0'; }, 1800);
-  }
-
-  // ── Projection: polar (r, theta) to screen (x, y) ────────────────────────
-  // All draw calls go through here. Zoom and pan are applied only at projection.
-  function project(r, theta) {
-    return {
-      x: cx + Math.cos(theta) * r * zoom,
-      y: cy + Math.sin(theta) * r * zoom * DISK_TILT
-    };
-  }
-
-  // Screen radius: r in field space to r in screen space
-  function sr(r) { return r * zoom; }
-
-  // ── Glyph helper ──────────────────────────────────────────────────────────
-  function glyphForRadius(r) {
-    var zone;
-    if (coreLoaded) {
-      zone = AIBH.classify(r, { bound: {r:rs}, ftz: {r:rFTZ}, isco: {r:rISCO} });
-    } else {
-      if      (r > rStream) zone = 'stream';
-      else if (r > rISCO)   zone = 'isco';
-      else if (r > rFTZ)    zone = 'ftz';
-      else                  zone = 'bound';
-    }
-    var g = GLYPHS[zone] || GLYPHS.bound;
-    return g[Math.floor(Math.random() * g.length)];
-  }
+  // ── Disk rotation — the whole field slowly rotates ────────────────────────
+  var diskRotation    = 0;
+  var DISK_ROTATION_SPEED = 0.00018;
 
   // ── Particle factory ──────────────────────────────────────────────────────
-  function fieldRadius() { return Math.min(W, H) / zoom * 0.50; }
+  function fieldR() { return Math.min(W, H) / zoom * 0.50; }
 
   function makeParticle(hint) {
-    var rMin, rMax, fR = fieldRadius();
-    if (hint === 'disk') { rMin = rISCO;          rMax = rStream; }
-    else                 { rMin = rStream * 0.65;  rMax = fR; }
+    var rMin, rMax, fR = fieldR();
+    if (hint === 'disk') { rMin = rISCO; rMax = rStream; }
+    else                 { rMin = rStream * 0.55; rMax = fR; }
     if (rMax <= rMin) rMax = rMin + 10;
     var r = rMin + Math.random() * (rMax - rMin);
+
+    // Low angular momentum = visible infall. Range tuned so particles
+    // spiral in over 3-8 seconds at 60fps, not stable orbit.
+    var L  = r * (0.0008 + Math.random() * 0.003);
+
+    // Fast infall rate -- particles visibly fall into the hole
+    var dr = -(0.28 + Math.random() * 0.55);
+
     return {
       r:          r,
       theta:      Math.random() * Math.PI * 2,
-      L:          r * (0.003 + Math.random() * 0.009),
-      dr:         -(0.10 + Math.random() * 0.28),
-      size:       8 + Math.random() * 5,
-      opacity:    0.10 + Math.random() * 0.55,
+      L:          L,
+      dr:         dr,
+      size:       7 + Math.random() * 6,
+      opacity:    0.15 + Math.random() * 0.70,
       glyph:      glyphForRadius(r),
-      glyphTimer: 0
+      glyphTimer: Math.floor(Math.random() * 6),
+      trail:      []
     };
   }
 
-  // Leakage: spawns in screen space from boundary, so it must track screen position.
-  // Store as screen coords — leakage is a visual effect, not a field particle.
   function makeLeak() {
-    var angle = Math.random() * Math.PI * 2;
-    var edgeR = rs * (1.02 + Math.random() * 0.25);
-    var p     = project(edgeR, angle);
-    var speed = 0.4 + Math.random() * 1.2;
-    var g     = GLYPHS.bound;
+    var angle = Math.random() * Math.PI * 2 + diskRotation;
+    var edgeR = rs * (1.02 + Math.random() * 0.3);
+    var speed = 0.6 + Math.random() * 2.0;
     return {
-      x:     p.x,
-      y:     p.y,
+      x:     cx + Math.cos(angle) * sr(edgeR),
+      y:     cy + Math.sin(angle) * sr(edgeR) * DISK_TILT,
       vx:    Math.cos(angle) * speed,
       vy:    Math.sin(angle) * speed * DISK_TILT,
       life:  1.0,
-      decay: 0.005 + Math.random() * 0.015,
-      glyph: g[Math.floor(Math.random() * g.length)],
-      size:  7 + Math.random() * 4
+      decay: 0.004 + Math.random() * 0.012,
+      glyph: GLYPHS_BOUND[Math.floor(Math.random() * GLYPHS_BOUND.length)],
+      size:  7 + Math.random() * 5
     };
   }
 
   function initParticles() {
-    particles = [];
-    leakage   = [];
+    particles = []; leakage = [];
     for (var i = 0; i < NPARTICLES; i++) {
-      particles.push(makeParticle(i < NPARTICLES * 0.55 ? 'disk' : 'outer'));
+      particles.push(makeParticle(i < NPARTICLES * 0.60 ? 'disk' : 'outer'));
     }
-    for (var j = 0; j < 40; j++) leakage.push(makeLeak());
+    for (var j = 0; j < 60; j++) leakage.push(makeLeak());
   }
 
   // ── Particle update ───────────────────────────────────────────────────────
   function updateParticle(p) {
-    var fR = fieldRadius();
+    var fR = fieldR();
 
     if (coreLoaded) {
       var zones  = AIBH.zoneMap(rs);
@@ -381,50 +357,77 @@
       p.theta = result.theta;
     } else {
       var omega = p.L / (p.r * p.r);
-      p.theta  += omega;
+      p.theta  += omega + diskRotation * 0.15;
+
       var safeR = Math.max(p.r, rs * 1.01);
-      var grav  = 1.0 + Math.pow(rs / safeR, 2) * 2.5;
-      p.r      += p.dr * grav;
-      if (p.r < rFTZ * 1.08 && p.r > rs * 1.05) p.theta += omega * 3.5;
+
+      // Strong gravitational acceleration -- visible collapse at all radii
+      var grav  = 1.0 + Math.pow(rs / safeR, 2) * 4.5;
+
+      // Additional pull in FTZ -- particles visibly accelerate as they approach
+      if (p.r < rISCO) grav *= 1.8;
+      if (p.r < rFTZ)  grav *= 2.5;
+
+      p.r += p.dr * grav;
+
+      // FTZ spin-up -- angular velocity spikes as r shrinks (conserved L/r^2)
+      if (p.r < rFTZ * 1.1 && p.r > rs * 1.02) {
+        p.theta += omega * 4.2;
+      }
     }
 
+    // Glyph refresh -- faster near boundary for visual intensity
+    var refreshRate = p.r < rFTZ ? 4 : 9;
     p.glyphTimer++;
-    if (p.glyphTimer > 8) {
+    if (p.glyphTimer > refreshRate) {
       p.glyph      = glyphForRadius(p.r);
       p.glyphTimer = 0;
     }
 
+    // Compression event
     if (p.r <= rs * 0.99) {
       compressionEvents++;
       document.getElementById('comp-val').textContent = compressionEvents;
-      if (leakage.length < LEAK_MAX) leakage.push(makeLeak());
-      var fresh = makeParticle(Math.random() > 0.35 ? 'disk' : 'outer');
-      fresh.r   = rStream * (0.75 + Math.random() * 0.55);
+      // Burst of leakage on each compression
+      var burst = 2 + Math.floor(Math.random() * 3);
+      for (var b = 0; b < burst; b++) {
+        if (leakage.length < LEAK_MAX) leakage.push(makeLeak());
+      }
+      var fresh = makeParticle(Math.random() > 0.4 ? 'disk' : 'outer');
+      fresh.r   = rStream * (0.6 + Math.random() * 0.7);
       p.r = fresh.r; p.theta = fresh.theta; p.L = fresh.L;
-      p.dr = fresh.dr; p.size = fresh.size; p.opacity = fresh.opacity;
-      p.glyph = fresh.glyph;
+      p.dr = fresh.dr; p.size = fresh.size;
+      p.opacity = fresh.opacity; p.glyph = fresh.glyph;
       return;
     }
 
-    if (p.r > fR * 1.1) {
+    if (p.r > fR * 1.15) {
       var outer = makeParticle('outer');
       p.r = outer.r; p.theta = outer.theta; p.L = outer.L;
-      p.dr = outer.dr; p.size = outer.size; p.opacity = outer.opacity;
-      p.glyph = outer.glyph;
+      p.dr = outer.dr; p.size = outer.size;
+      p.opacity = outer.opacity; p.glyph = outer.glyph;
     }
   }
 
+  // ── Particle draw ─────────────────────────────────────────────────────────
   function drawParticle(p) {
-    var sc    = project(p.r, p.theta);
+    var screenX = px(p.r, p.theta + diskRotation);
+    var screenY = py(p.r, p.theta + diskRotation);
+
     var t     = Math.max(0, Math.min(1, (p.r - rs) / (rStream * 1.3 - rs)));
-    var occ   = Math.sin(p.theta) > 0 ? 0.45 : 1.0;
-    var alpha = p.opacity * t * occ;
+    var occ   = Math.sin(p.theta + diskRotation) > 0 ? 0.45 : 1.0;
+
+    // Opacity boost near boundary -- particles glow as they fall in
+    var nearBoost = p.r < rFTZ ? (1.0 + (rFTZ - p.r) / rFTZ * 1.2) : 1.0;
+    var alpha = p.opacity * t * occ * nearBoost;
+    alpha = Math.min(alpha, 0.92);
     if (alpha < 0.012) return;
+
     ctx.save();
     ctx.globalAlpha = alpha;
-    ctx.fillStyle   = '#0a0a0a';
+    ctx.fillStyle   = '#000';
     ctx.font        = p.size + 'px monospace';
-    ctx.fillText(p.glyph, sc.x - 4, sc.y + 4);
+    ctx.fillText(p.glyph, screenX - 4, screenY + 4);
     ctx.restore();
   }
 
@@ -435,9 +438,9 @@
       return AIBH.entropy(particles, zones).bits;
     }
     var bins = 6, counts = new Array(bins).fill(0);
-    var fR = fieldRadius();
+    var fR   = Math.min(W, H) * 0.52;
     for (var i = 0; i < particles.length; i++) {
-      var norm = particles[i].r / (fR * 1.04);
+      var norm = particles[i].r / fR;
       var bin  = Math.floor(Math.min(norm, 0.999) * bins);
       if (bin >= 0 && bin < bins) counts[bin]++;
     }
@@ -448,47 +451,52 @@
     return H.toFixed(3);
   }
 
-  // ── Draw passes — all use project() / sr() ────────────────────────────────
-
+  // ── Draw: geodesics ───────────────────────────────────────────────────────
   function drawGeodesics() {
     if (!showGeodesics) return;
     ctx.save();
-    ctx.strokeStyle = 'rgba(10,10,10,0.035)';
+    ctx.strokeStyle = 'rgba(0,0,0,0.04)';
     ctx.lineWidth   = 0.7;
     var farR = Math.min(W, H) * 0.50;
     for (var i = 0; i < 28; i++) {
-      var angle = (i / 28) * Math.PI * 2;
+      var angle = (i / 28) * Math.PI * 2 + diskRotation * 0.3;
       var perp  = angle + Math.PI / 2;
-      var far   = project(farR / zoom, angle);
-      var cp    = {
-        x: cx + (Math.cos(angle) * sr(rFTZ) + Math.cos(perp) * sr(rFTZ) * 0.75),
-        y: cy + (Math.sin(angle) * sr(rFTZ) + Math.sin(perp) * sr(rFTZ) * 0.75) * DISK_TILT
-      };
-      var end = project(rISCO, angle + 0.55);
       ctx.beginPath();
-      ctx.moveTo(far.x, far.y);
-      ctx.quadraticCurveTo(cp.x, cp.y, end.x, end.y);
+      ctx.moveTo(
+        cx + Math.cos(angle) * farR,
+        cy + Math.sin(angle) * farR
+      );
+      ctx.quadraticCurveTo(
+        cx + Math.cos(angle) * sr(rFTZ) + Math.cos(perp) * sr(rFTZ) * 0.75,
+        cy + Math.sin(angle) * sr(rFTZ) + Math.sin(perp) * sr(rFTZ) * 0.75,
+        cx + Math.cos(angle + 0.55) * sr(rISCO),
+        cy + Math.sin(angle + 0.55) * sr(rISCO)
+      );
       ctx.stroke();
     }
     ctx.restore();
   }
 
+  // ── Draw: accretion disk rings ────────────────────────────────────────────
   function drawDataStream() {
-    for (var i = 0; i < 20; i++) {
-      var t   = i / 20;
+    for (var i = 0; i < 24; i++) {
+      var t   = i / 24;
       var r   = rISCO + t * (rStream - rISCO);
       var den = 1.0 - t;
+      // Rings pulse slightly with disk rotation
+      var pulse = 1.0 + Math.sin(diskRotation * 12 + t * Math.PI) * 0.008;
       ctx.save();
-      ctx.strokeStyle = 'rgba(10,10,10,' + (0.03 + den * 0.15) + ')';
-      ctx.lineWidth   = 0.4 + den * 1.6;
+      ctx.strokeStyle = 'rgba(0,0,0,' + (0.03 + den * 0.18) + ')';
+      ctx.lineWidth   = (0.4 + den * 2.0) * pulse;
       ctx.beginPath();
       ctx.ellipse(cx, cy, sr(r), sr(r) * DISK_TILT, 0, 0, Math.PI * 2);
       ctx.stroke();
       ctx.restore();
     }
+    // ISCO dashed marker
     ctx.save();
-    ctx.strokeStyle = 'rgba(10,10,10,0.28)';
-    ctx.lineWidth   = 0.7;
+    ctx.strokeStyle = 'rgba(0,0,0,0.30)';
+    ctx.lineWidth   = 0.8;
     ctx.setLineDash([3, 6]);
     ctx.beginPath();
     ctx.ellipse(cx, cy, sr(rISCO), sr(rISCO) * DISK_TILT, 0, 0, Math.PI * 2);
@@ -497,9 +505,10 @@
     ctx.restore();
   }
 
+  // ── Draw: FTZ ─────────────────────────────────────────────────────────────
   function drawFTZ() {
     ctx.save();
-    ctx.strokeStyle = 'rgba(10,10,10,0.10)';
+    ctx.strokeStyle = 'rgba(0,0,0,0.12)';
     ctx.lineWidth   = 0.6;
     ctx.setLineDash([2, 7]);
     ctx.beginPath();
@@ -509,10 +518,11 @@
     ctx.restore();
   }
 
+  // ── Draw: zone labels ─────────────────────────────────────────────────────
   function drawZoneLabels() {
     if (!showZoneLabels) return;
     ctx.save();
-    ctx.fillStyle   = '#0a0a0a';
+    ctx.fillStyle   = '#000';
     ctx.font        = '8px monospace';
     ctx.globalAlpha = 0.26;
     var labels = [
@@ -527,36 +537,43 @@
     ctx.restore();
   }
 
+  // ── Draw: compression core ────────────────────────────────────────────────
   function drawCompressionCore() {
-    var rShadow = rs * 2.6;
-    var grad    = ctx.createRadialGradient(cx, cy, sr(rs) * 0.9, cx, cy, sr(rShadow));
-    grad.addColorStop(0,    'rgba(10,10,10,0.90)');
-    grad.addColorStop(0.28, 'rgba(10,10,10,0.52)');
-    grad.addColorStop(0.65, 'rgba(10,10,10,0.14)');
-    grad.addColorStop(1,    'rgba(10,10,10,0)');
+    var rShadow = rs * 2.8;
+
+    // Pulsing shadow -- breathes with compression events
+    var pulse = 1.0 + Math.sin(tick * 0.04) * 0.025;
+
+    var grad = ctx.createRadialGradient(cx, cy, sr(rs) * 0.85, cx, cy, sr(rShadow) * pulse);
+    grad.addColorStop(0,    'rgba(0,0,0,0.94)');
+    grad.addColorStop(0.22, 'rgba(0,0,0,0.60)');
+    grad.addColorStop(0.55, 'rgba(0,0,0,0.18)');
+    grad.addColorStop(1,    'rgba(0,0,0,0)');
     ctx.beginPath();
-    ctx.arc(cx, cy, sr(rShadow), 0, Math.PI * 2);
+    ctx.arc(cx, cy, sr(rShadow) * pulse, 0, Math.PI * 2);
     ctx.fillStyle = grad;
     ctx.fill();
 
+    // Boundary ring
     ctx.save();
-    ctx.strokeStyle = '#0a0a0a';
-    ctx.lineWidth   = 1.4;
+    ctx.strokeStyle = '#000';
+    ctx.lineWidth   = 1.6;
     ctx.beginPath();
     ctx.arc(cx, cy, sr(rs), 0, Math.PI * 2);
     ctx.stroke();
     ctx.restore();
 
+    // Inner void -- pure white, the latent space
     ctx.save();
     ctx.beginPath();
-    ctx.arc(cx, cy, Math.max(0, sr(rs) - 0.7), 0, Math.PI * 2);
-    ctx.fillStyle = '#f5f5f0';
+    ctx.arc(cx, cy, Math.max(0, sr(rs) - 0.8), 0, Math.PI * 2);
+    ctx.fillStyle = '#ffffff';
     ctx.fill();
     ctx.restore();
 
     if (showZoneLabels) {
       ctx.save();
-      ctx.fillStyle   = '#0a0a0a';
+      ctx.fillStyle   = '#000';
       ctx.font        = '8px monospace';
       ctx.globalAlpha = 0.36;
       ctx.fillText('COMPRESSION BOUNDARY', cx - 62, cy - sr(rs) - 11);
@@ -571,8 +588,10 @@
   // ── Main loop ─────────────────────────────────────────────────────────────
   function loop() {
     tick++;
+    diskRotation += DISK_ROTATION_SPEED;
+
     ctx.clearRect(0, 0, W, H);
-    ctx.fillStyle = '#f5f5f0';
+    ctx.fillStyle = '#fff';
     ctx.fillRect(0, 0, W, H);
 
     drawGeodesics();
@@ -586,17 +605,17 @@
     drawFTZ();
     drawCompressionCore();
 
+    // Leakage
     leakage = leakage.filter(function (l) { return l.life > 0; });
     for (var j = 0; j < leakage.length; j++) {
-      leakage[j].x    += leakage[j].vx;
-      leakage[j].y    += leakage[j].vy;
-      leakage[j].life -= leakage[j].decay;
-      if (leakage[j].life <= 0) continue;
+      var l = leakage[j];
+      l.x += l.vx; l.y += l.vy; l.life -= l.decay;
+      if (l.life <= 0) continue;
       ctx.save();
-      ctx.globalAlpha = leakage[j].life * 0.35;
-      ctx.fillStyle   = '#0a0a0a';
-      ctx.font        = leakage[j].size + 'px monospace';
-      ctx.fillText(leakage[j].glyph, leakage[j].x - 3, leakage[j].y + 3);
+      ctx.globalAlpha = l.life * 0.45;
+      ctx.fillStyle   = '#000';
+      ctx.font        = l.size + 'px monospace';
+      ctx.fillText(l.glyph, l.x - 3, l.y + 3);
       ctx.restore();
     }
 
@@ -611,103 +630,60 @@
     requestAnimationFrame(loop);
   }
 
-  // ── Zoom: mouse wheel — zooms toward cursor position ─────────────────────
+  // ── Zoom toward cursor ────────────────────────────────────────────────────
   canvas.addEventListener('wheel', function (e) {
     e.preventDefault();
     var factor  = e.deltaY < 0 ? 1.12 : 0.893;
     var newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom * factor));
-    // Zoom toward cursor: shift cx, cy so the point under cursor stays fixed
-    var mx = e.clientX;
-    var my = e.clientY;
-    cx = mx - (mx - cx) * (newZoom / zoom);
-    cy = my - (my - cy) * (newZoom / zoom);
+    cx = e.clientX - (e.clientX - cx) * (newZoom / zoom);
+    cy = e.clientY - (e.clientY - cy) * (newZoom / zoom);
     zoom = newZoom;
     document.getElementById('zoom-val').textContent = zoom.toFixed(2);
   }, { passive: false });
 
-  // ── Pan: drag ─────────────────────────────────────────────────────────────
+  // ── Drag to pan ───────────────────────────────────────────────────────────
   var drag = { active: false, lastX: 0, lastY: 0 };
-
   canvas.addEventListener('mousedown', function (e) {
     if (e.button !== 0) return;
-    drag.active = true;
-    drag.lastX  = e.clientX;
-    drag.lastY  = e.clientY;
+    drag.active = true; drag.lastX = e.clientX; drag.lastY = e.clientY;
     canvas.classList.add('dragging');
   });
-
   window.addEventListener('mousemove', function (e) {
     if (!drag.active) return;
-    var dx = e.clientX - drag.lastX;
-    var dy = e.clientY - drag.lastY;
-    cx += dx;
-    cy += dy;
-    drag.lastX = e.clientX;
-    drag.lastY = e.clientY;
+    cx += e.clientX - drag.lastX; cy += e.clientY - drag.lastY;
+    drag.lastX = e.clientX; drag.lastY = e.clientY;
   });
-
   window.addEventListener('mouseup', function () {
-    drag.active = false;
-    canvas.classList.remove('dragging');
+    drag.active = false; canvas.classList.remove('dragging');
   });
 
-  // ── Touch: pinch-zoom and pan ─────────────────────────────────────────────
-  var touch = { lastDist: 0, lastX: 0, lastY: 0, count: 0 };
-
-  function touchDist(t) {
-    var dx = t[0].clientX - t[1].clientX;
-    var dy = t[0].clientY - t[1].clientY;
-    return Math.sqrt(dx * dx + dy * dy);
+  // ── Pinch zoom + touch pan ────────────────────────────────────────────────
+  var touch = { lastDist: 0, lastX: 0, lastY: 0 };
+  function tdist(t) {
+    var dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY;
+    return Math.sqrt(dx*dx + dy*dy);
   }
-  function touchMid(t) {
-    return { x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2 };
-  }
-
+  function tmid(t) { return { x:(t[0].clientX+t[1].clientX)/2, y:(t[0].clientY+t[1].clientY)/2 }; }
   canvas.addEventListener('touchstart', function (e) {
     e.preventDefault();
-    touch.count = e.touches.length;
-    if (touch.count === 1) {
-      touch.lastX = e.touches[0].clientX;
-      touch.lastY = e.touches[0].clientY;
-    } else if (touch.count === 2) {
-      touch.lastDist = touchDist(e.touches);
-      var m = touchMid(e.touches);
-      touch.lastX = m.x;
-      touch.lastY = m.y;
-    }
+    if (e.touches.length === 1) { touch.lastX = e.touches[0].clientX; touch.lastY = e.touches[0].clientY; }
+    else if (e.touches.length === 2) { touch.lastDist = tdist(e.touches); var m=tmid(e.touches); touch.lastX=m.x; touch.lastY=m.y; }
   }, { passive: false });
-
   canvas.addEventListener('touchmove', function (e) {
     e.preventDefault();
-    touch.count = e.touches.length;
-    if (touch.count === 1) {
-      var dx = e.touches[0].clientX - touch.lastX;
-      var dy = e.touches[0].clientY - touch.lastY;
-      cx += dx; cy += dy;
-      touch.lastX = e.touches[0].clientX;
-      touch.lastY = e.touches[0].clientY;
-    } else if (touch.count === 2) {
-      var dist    = touchDist(e.touches);
-      var mid     = touchMid(e.touches);
-      var factor  = dist / touch.lastDist;
-      var newZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom * factor));
-      cx = mid.x - (mid.x - cx) * (newZoom / zoom);
-      cy = mid.y - (mid.y - cy) * (newZoom / zoom);
-      zoom = newZoom;
-      document.getElementById('zoom-val').textContent = zoom.toFixed(2);
-      // Pan with midpoint movement
-      cx += mid.x - touch.lastX;
-      cy += mid.y - touch.lastY;
-      touch.lastDist = dist;
-      touch.lastX    = mid.x;
-      touch.lastY    = mid.y;
+    if (e.touches.length === 1) {
+      cx += e.touches[0].clientX - touch.lastX; cy += e.touches[0].clientY - touch.lastY;
+      touch.lastX = e.touches[0].clientX; touch.lastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      var dist = tdist(e.touches), mid = tmid(e.touches);
+      var nz = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, zoom * dist / touch.lastDist));
+      cx = mid.x - (mid.x - cx) * (nz / zoom); cy = mid.y - (mid.y - cy) * (nz / zoom);
+      cx += mid.x - touch.lastX; cy += mid.y - touch.lastY;
+      zoom = nz; document.getElementById('zoom-val').textContent = zoom.toFixed(2);
+      touch.lastDist = dist; touch.lastX = mid.x; touch.lastY = mid.y;
     }
   }, { passive: false });
-
-  canvas.addEventListener('touchend', function (e) {
-    e.preventDefault();
-    touch.count = e.touches.length;
-  }, { passive: false });
+  canvas.addEventListener('touchend', function (e) { e.preventDefault(); }, { passive: false });
 
   // ── Controls ──────────────────────────────────────────────────────────────
   document.getElementById('btn-plus').addEventListener('click', function () {
@@ -718,10 +694,8 @@
     compressionK = Math.max(0.4, +(compressionK - 0.2).toFixed(1));
     setGeometry();
   });
-
   var btnGeo  = document.getElementById('btn-geo');
   var btnZone = document.getElementById('btn-zone');
-
   btnGeo.addEventListener('click', function () {
     showGeodesics = !showGeodesics;
     btnGeo.classList.toggle('active', showGeodesics);
@@ -730,15 +704,20 @@
     showZoneLabels = !showZoneLabels;
     btnZone.classList.toggle('active', showZoneLabels);
   });
-  document.getElementById('btn-reset').addEventListener('click', function () {
-    resetView();
-  });
+  document.getElementById('btn-reset').addEventListener('click', resetView);
 
   // ── Boot ──────────────────────────────────────────────────────────────────
   setGeometry();
   resetView();
   initParticles();
-  if (coreLoaded) flashStatus('compression field core ready');
+
+  var statusEl = document.getElementById('engine-status');
+  if (coreLoaded) {
+    statusEl.textContent = 'compression field core ready';
+    statusEl.style.opacity = '0.4';
+    setTimeout(function () { statusEl.style.opacity = '0'; }, 1800);
+  }
+
   loop();
 
 }());

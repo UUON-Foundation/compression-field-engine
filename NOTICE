@@ -1,0 +1,47 @@
+UUON Compression Field Engine
+AI Information Black Hole · Geometric Compression Model
+Copyright (c) Phillip Aguilar Ruiz III / UUON Foundation Inc.
+
+ORIGIN
+
+Author:   Phillip Aguilar Ruiz III
+Org:      UUON Foundation Inc.
+Contact:  phi1@uuonfoundation.com
+License:  USAL-1.0
+
+ARCHITECTURE
+
+This repository contains a public renderer shell (index.html) and a
+proprietary engine core (core/engine.js). The core is excluded from the
+public repository via .gitignore and served from uuon.world in production.
+The public shell contains zero algorithm logic. All computation is delegated
+to window.AIBH.* exposed by the engine core.
+
+THIRD-PARTY DEPENDENCIES
+
+Google Fonts — Space Mono
+  License: SIL Open Font License 1.1
+  Use:     Typography only — loaded from fonts.googleapis.com
+  No computation, no runtime dependency on Google services.
+
+MATHEMATICAL PRIOR ART
+
+The following mathematics are implemented in this engine but are not
+claimed as original by UUON Foundation Inc.:
+
+  Schwarzschild radius formula:    rs = 2GM/c²  (Karl Schwarzschild, 1916)
+  Shannon entropy:                 H = -Σp·log₂(p)  (Claude Shannon, 1948)
+  Angular momentum conservation:   L = r²·dθ/dt  (classical mechanics)
+  ISCO radius:                     r = 3rs  (general relativity, standard result)
+
+ORIGINAL IP
+
+The following components are original to Phillip Aguilar Ruiz III /
+UUON Foundation Inc. and are protected under USAL-1.0:
+
+  AIBH_zoneMap()      — M-layer zone mapping architecture
+  AIBH_infall()       — infall dynamics with zone-conditional angular boost
+  AIBH_entropy()      — entropy computed over zone classification, not spatial bins
+  AIBH_leakSpawn()    — compression event → isotropic leakage emission coupling
+  AIBH_particleInit() — angular-momentum-seeded inspiral initialization
+  F=(P,E,M,R,C)       — compression formulation applied to this field geometry

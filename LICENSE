@@ -1,0 +1,53 @@
+UUON Source Attribution License -- Version 1.0 (USAL-1.0)
+Copyright (c) 2025 Phillip Aguilar Ruiz III / UUON Foundation Inc.
+All rights reserved.
+
+ORIGIN
+
+This work was originated by Phillip Aguilar Ruiz III under UUON Foundation Inc.
+The compression field architecture, zone mapping system, F=(P,E,M,R,C) formulation,
+infall dynamics, and entropy computation in this repository constitute the original
+creative and engineering contribution of the above named author.
+
+GRANT OF USE
+
+Permission is granted, free of charge, to any person obtaining a copy of this
+software and associated documentation files (the "Software"), to use, copy,
+modify, and distribute the Software for non-commercial and commercial purposes,
+subject to the following conditions:
+
+CONDITIONS
+
+1. ATTRIBUTION REQUIRED
+   All copies, derivatives, or works that incorporate any portion of this Software
+   must include the following attribution, visibly and legibly, in all distributed
+   forms:
+       "Based on work by Phillip Aguilar Ruiz III / UUON Foundation Inc.
+        Original source: https://github.com/UUON-Foundation/compression-field-engine"
+
+2. AI TRAINING PROHIBITED
+   This Software, its source code, output artifacts, and any derivative works may
+   NOT be used to train, fine-tune, evaluate, or otherwise inform any machine
+   learning model, large language model, neural network, or AI system of any kind,
+   without explicit written permission from Phillip Aguilar Ruiz III.
+
+3. DERIVATIVE WORKS
+   Any derivative work that modifies, extends, or incorporates this Software must:
+   a) Retain this license file unmodified, or include it alongside the modified license.
+   b) Clearly document what changes were made relative to the original.
+   c) Not represent the derivative as the original.
+
+4. NO WARRANTY
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+   THE SOFTWARE.
+
+CONTACT
+
+Phillip Aguilar Ruiz III
+UUON Foundation Inc.
+phi1@uuonfoundation.com

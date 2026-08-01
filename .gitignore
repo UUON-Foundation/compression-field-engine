@@ -1,3 +1,4 @@
 .DS_Store
 engine.js
 compression-field-engine-core/
+core/

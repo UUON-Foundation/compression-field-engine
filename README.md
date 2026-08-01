@@ -5,7 +5,8 @@
 `compression-field-engine` on GitHub under UUON-Foundation org.
 Live at: https://uuon-foundation.github.io/compression-field-engine/
 License: USAL-1.0 / Phillip Aguilar Ruiz III / UUON Foundation Inc.
-![Display](link)
+
+![Display](https://github.com/UUON-Foundation/compression-field-engine/blob/220940ca92104d055d93a2ab58af52450ed45fdc/docs/images/compression-field-engine-image.png)
 ---
 
 ## What This Is

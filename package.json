@@ -1,0 +1,24 @@
+{
+  "name": "@uuon-foundation/compression-field-engine",
+  "version": "1.0.0",
+  "description": "Geometric compression field engine. Four-zone infall model. F=(P,E,M,R,C). UUON Foundation Inc.",
+  "main": "engine.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UUON-Foundation/compression-field-engine.git"
+  },
+  "keywords": [],
+  "author": "Phillip Aguilar Ruiz III <phi1@uuonfoundation.com>",
+  "license": "LicenseRef-USAL-1.0",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/UUON-Foundation/compression-field-engine/issues"
+  },
+  "homepage": "https://uuon-foundation.github.io/compression-field-engine/"
+}

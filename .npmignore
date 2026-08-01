@@ -1,0 +1,9 @@
+.DS_Store
+.env
+.env.*
+.github/
+compression-field-engine-core/
+core/
+*.zip
+node_modules/
+engine.js

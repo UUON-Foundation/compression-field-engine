@@ -1,6 +1,6 @@
 {
   "name": "@uuon-foundation/compression-field-engine",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Geometric compression field engine. Four-zone infall model. F=(P,E,M,R,C). UUON Foundation Inc.",
   "main": "engine.js",
   "directories": {

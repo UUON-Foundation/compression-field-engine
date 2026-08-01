@@ -1,11 +1,8 @@
 {
   "name": "@uuon-foundation/compression-field-engine",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Geometric compression field engine. Four-zone infall model. F=(P,E,M,R,C). UUON Foundation Inc.",
   "main": "index.html",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -13,10 +10,9 @@
     "type": "git",
     "url": "git+https://github.com/UUON-Foundation/compression-field-engine.git"
   },
-  "keywords": "[\"compression\",\"field-engine\",\"canvas\",\"particle-system\",\"geometric-compression\",\"information-theory\",\"uuon\",\"black-hole\",\"webgl\"]",
+  "keywords": ["compression","field-engine","canvas","particle-system","geometric-compression","information-theory","uuon","black-hole","webgl"],
   "author": "Phillip Aguilar Ruiz III <phi1@uuonfoundation.com>",
   "license": "LicenseRef-USAL-1.0",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/UUON-Foundation/compression-field-engine/issues"
   },

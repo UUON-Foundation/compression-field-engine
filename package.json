@@ -10,11 +10,25 @@
     "type": "git",
     "url": "git+https://github.com/UUON-Foundation/compression-field-engine.git"
   },
-  "keywords": ["compression","field-engine","canvas","particle-system","geometric-compression","information-theory","uuon","black-hole","webgl"],
+  "keywords": [
+    "compression",
+    "field-engine",
+    "canvas",
+    "particle-system",
+    "geometric-compression",
+    "information-theory",
+    "uuon",
+    "black-hole",
+    "webgl"
+  ],
   "author": "Phillip Aguilar Ruiz III <phi1@uuonfoundation.com>",
   "license": "LicenseRef-USAL-1.0",
   "bugs": {
     "url": "https://github.com/UUON-Foundation/compression-field-engine/issues"
   },
-  "homepage": "https://uuon-foundation.github.io/compression-field-engine/"
+  "homepage": "https://uuon-foundation.github.io/compression-field-engine/",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1"
+  }
 }

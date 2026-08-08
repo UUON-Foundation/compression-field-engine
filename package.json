@@ -28,6 +28,7 @@
   },
   "homepage": "https://uuon-foundation.github.io/compression-field-engine/",
   "dependencies": {
+    "@uuon-foundation/asciii-continous-psystem": "^1.0.0",
     "dotenv": "^17.4.2",
     "express": "^5.2.1"
   }
